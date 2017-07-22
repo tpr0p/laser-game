@@ -8,7 +8,7 @@
 // Background must be set in game scene
 //
 /*TODO:
- - add tap gesture recognizers to transition widgets from scrollview to gamescene
+ - add tap gesture recognizers to transition widgets from scrollview to gamescene.
  */
 
 import UIKit
