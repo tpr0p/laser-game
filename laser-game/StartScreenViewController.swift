@@ -8,27 +8,22 @@
 
 import UIKit
 
-class StartScreenController: UIViewController {
+class StartScreenViewController: UIViewController {
     
-    func getStats() {
-        debugPrint("Width of Screen: \(UIScreen.main.bounds.width)")
-        debugPrint("Height of Screen: \(UIScreen.main.bounds.height)")
+    //MARK: - Populating the View
+    
+    func addBackground(){
+        let backgroundImageView = UIImageView(frame: view.bounds)
+        backgroundImageView.contentMode =  UIViewContentMode.scaleAspectFill
+        backgroundImageView.clipsToBounds = true
+        backgroundImageView.image = UIImage(named: "startscreen")
+        backgroundImageView.center = view.center
+        view.addSubview(backgroundImageView)
+        //Ensures backgroundImageView is behind all other subviews of self.view
+        self.view.sendSubview(toBack: backgroundImageView)
     }
     
-    func assignBackground(){
-        let background = UIImage(named: "startscreen")
-        
-        var imageView : UIImageView!
-        imageView = UIImageView(frame: view.bounds)
-        imageView.contentMode =  UIViewContentMode.scaleAspectFill
-        imageView.clipsToBounds = true
-        imageView.image = background
-        imageView.center = view.center
-        view.addSubview(imageView)
-        self.view.sendSubview(toBack: imageView)
-    }
-    
-    func instantiateButtons(){
+    func addButtons(){
         let playButton = UIButton(type: UIButtonType.roundedRect)
         playButton.frame = CGRect(x: (209), y: (30), width: (150), height: (70))
         playButton.layer.cornerRadius = 15
@@ -67,6 +62,8 @@ class StartScreenController: UIViewController {
         infoButton.addTarget(self, action: #selector(infoButtonTapped), for: .touchUpInside)
     }
     
+    //MARK: - Button Actions
+    
     func playButtonTapped() {
         debugPrint("Play Button Tapped")
         
@@ -83,12 +80,12 @@ class StartScreenController: UIViewController {
         debugPrint ("Info Button Tapped")
     }
     
+    //MARK: - Overrides
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        getStats()
-        assignBackground()
-        instantiateButtons()
+        addBackground()
+        addButtons()
     }
     
     override func didReceiveMemoryWarning() {
