@@ -5,10 +5,16 @@
 //  Created by Thomas Propson on 9/24/16.
 //  Copyright © 2016 com.thomaspropson. All rights reserved.
 //
-// Background must be set in game scene
+//
 //
 /*TODO:
- - add tap gesture recognizers to transition widgets from scrollview to gamescene.
+ - !! add title layer that displays widget name above middle widget
+ - !! add tap gesture recognizers to transition widgets from scrollview to gamescene.
+ - ! subclass scrollView to create widgetScrollView with all of its properties
+ - ! clean up the code
+    - make loadGameScene intake a GameScene parameter (functionality moreso than best practice)
+    - determine which properites should be let constants and which need to be vars (best pract.)
+    - use markers (best pract.)
  */
 
 import UIKit
@@ -16,19 +22,23 @@ import SpriteKit
 
 class GameViewController: UIViewController {
     
+    override var prefersStatusBarHidden: Bool {
+        return true
+    }
+    
+    //The ScrollView that will house the widgets on the HUD
     var scrollView: UIScrollView!
     
-    //widget and widget properties
+    //Variables that will determine animation of widgets in the scrollView
     var currentMiddleWidget: UIImageView? = nil
     var nextMiddleWidget: UIImageView? = nil
     
-    
+    //Properties of the widget imageviews in scrollView -- should they be constants?
     var regularWidgetSize: CGSize = CGSize(width: 50, height: 50)
-    let middleWidgetSize: CGSize = CGSize(width: 65, height: 65)
-    let widgetSpacing: CGFloat = 10
-    
-    let regularWidgetAlpha: CGFloat = 0.65
-    let middleWidgetAlpha: CGFloat = 1.0
+    var middleWidgetSize: CGSize = CGSize(width: 65, height: 65)
+    var widgetSpacing: CGFloat = 10
+    var regularWidgetAlpha: CGFloat = 0.65
+    var middleWidgetAlpha: CGFloat = 1.0
     
     //content
     struct widget{
@@ -39,42 +49,23 @@ class GameViewController: UIViewController {
     
     //scrollView Properties
     //widgetsInView must be odd
-    let widgetsInView: Int = 5
+    var widgetsInView: Int = 5
     var contentOffsetMin: CGFloat = 0
     var contentOffsetMax: CGFloat = 0
     var initialContentOffsetX: CGFloat = 0.0
     
-    var isMovingRight: Bool = false
-    var isMovingLeft: Bool = false
+    var scrollViewIsMovingRight: Bool = false
+    var scrollViewIsMovingLeft: Bool = false
     
     //animations
     let scrollAnimation = UIViewPropertyAnimator(duration: 0.25, curve: .easeInOut)
     
-    var titleLayer: CATextLayer? = nil
-    let ephemeralTitleAnimation = CABasicAnimation()
+    let middleWidgetSwipe = UISwipeGestureRecognizer(target: self, action: #selector(middleWidgetSelected))
     
     func addScrollAnimationCompletion(){
         scrollAnimation.addCompletion{_ in
-            self.isMovingLeft = false
-            self.isMovingRight = false
-            
-            self.titleLayer?.removeAllAnimations()
-            self.titleLayer?.removeFromSuperlayer()
-            self.titleLayer = CATextLayer()
-            self.titleLayer?.frame = CGRect(x: UIScreen.main.bounds.midX-10,y:self.scrollView.frame.minY-20, width: 20, height: 5)
-            
-            self.setCurrentMiddleWidget()
-            
-            var i: Int = 0
-            for x in self.myWidgets{
-                if(x.image == self.currentMiddleWidget?.image){
-                    self.titleLayer?.string = self.myWidgets[i].title
-                }
-                i += 1
-            }
-            
-            self.view.layer.addSublayer(self.titleLayer!)
-            self.titleLayer?.add(self.ephemeralTitleAnimation, forKey: "opacity")
+            self.scrollViewIsMovingLeft = false
+            self.scrollViewIsMovingRight = false
         }
     }
     
@@ -87,13 +78,13 @@ class GameViewController: UIViewController {
         }
     }
     
-    func enlargeWidget(widget: UIImageView?, size: CGSize){
+    func enlargeWidget(widget: UIImageView?, to size: CGSize){
         let deltaW = size.width - (widget?.frame.width)!
         let deltaH = size.height - (widget?.frame.height)!
         let width = (widget?.frame.width)! + deltaW
         let height = (widget?.frame.height)! + deltaH
         
-        if(self.isMovingRight){
+        if(self.scrollViewIsMovingRight){
             //enlarges & pushes to maintain widgetspacing
             widget?.frame = CGRect(x: (widget?.frame.minX)!-deltaW, y: (scrollView.frame.height-height)/2, width: width, height: height)
         }
@@ -110,7 +101,7 @@ class GameViewController: UIViewController {
         let width = (widget?.frame.width)! - deltaW
         let height = (widget?.frame.height)! - deltaH
         
-        if(self.isMovingLeft){
+        if(self.scrollViewIsMovingLeft){
             //shrinks & pushes to maintain widgetspacing
             widget?.frame = CGRect(x: (widget?.frame.minX)!+deltaW, y: (scrollView.frame.height-height)/2, width: width, height: height)
         }
@@ -120,10 +111,12 @@ class GameViewController: UIViewController {
         }
     }
     
+    //MARK: - ScrollView Actions
+    
     func rightButtonTapped(){
         if (!scrollAnimation.isRunning && (scrollView.contentOffset.x < contentOffsetMax)){
             //set directional bool
-            self.isMovingRight = true
+            self.scrollViewIsMovingRight = true
             
             //set currentMiddleWidget
             setCurrentMiddleWidget()
@@ -138,6 +131,10 @@ class GameViewController: UIViewController {
                 index += 1
             }
             
+            //Update Recognizer to nextMiddleWidget
+            currentMiddleWidget?.removeGestureRecognizer(middleWidgetSwipe)
+            nextMiddleWidget?.addGestureRecognizer(middleWidgetSwipe)
+            
             //animations
             scrollAnimation.addAnimations {
                 //scroll the scrollview
@@ -146,7 +143,7 @@ class GameViewController: UIViewController {
                 //animate widgets
                 self.shrinkWidget(widget: self.currentMiddleWidget, size: self.regularWidgetSize)
                 self.currentMiddleWidget?.alpha = self.regularWidgetAlpha
-                self.enlargeWidget(widget: self.nextMiddleWidget, size: self.middleWidgetSize)
+                self.enlargeWidget(widget: self.nextMiddleWidget, to: self.middleWidgetSize)
                 self.nextMiddleWidget?.alpha = self.middleWidgetAlpha
             }
             addScrollAnimationCompletion()
@@ -157,7 +154,7 @@ class GameViewController: UIViewController {
     func leftButtonTapped(){
         if(!scrollAnimation.isRunning && (scrollView.contentOffset.x > contentOffsetMin)){
             //set directional bool
-            self.isMovingLeft = true
+            self.scrollViewIsMovingLeft = true
             
             //set CurrentMiddleWidget
             setCurrentMiddleWidget()
@@ -172,6 +169,10 @@ class GameViewController: UIViewController {
                 index += 1
             }
             
+            //Update Recognizer to nextMiddleWidget
+            currentMiddleWidget?.removeGestureRecognizer(middleWidgetSwipe)
+            nextMiddleWidget?.addGestureRecognizer(middleWidgetSwipe)
+            
             //animations
             scrollAnimation.addAnimations {
                 //scroll the scrollview
@@ -180,7 +181,7 @@ class GameViewController: UIViewController {
                 //animate widgets
                 self.shrinkWidget(widget: self.currentMiddleWidget, size: self.regularWidgetSize)
                 self.currentMiddleWidget?.alpha = self.regularWidgetAlpha
-                self.enlargeWidget(widget: self.nextMiddleWidget, size: self.middleWidgetSize)
+                self.enlargeWidget(widget: self.nextMiddleWidget, to: self.middleWidgetSize)
                 self.nextMiddleWidget?.alpha = self.middleWidgetAlpha
             }
             addScrollAnimationCompletion()
@@ -188,17 +189,26 @@ class GameViewController: UIViewController {
         }
     }
     
-    override func viewDidLoad() {
-        //load the gamescene
-        let scene = GameScene(size: view.bounds.size)
+    func middleWidgetSelected(sender: UISwipeGestureRecognizer){
+        print("middle widget selected")
+    }
+    
+    //MARK: - Loading the SKScene
+    
+    //SHOULD Load any SKScene by intaking said scene as a parameter
+    func loadGameScene(){
+        let scene = GameScene(size: self.view.bounds.size)
         let skView = self.view as! SKView
         skView.showsFPS = true
         skView.showsNodeCount = true
         skView.ignoresSiblingOrder = true
         scene.scaleMode = .resizeFill
         skView.presentScene(scene)
-        
-        //set up the background and buttons of the view
+    }
+    
+    //MARK: - Populating the HUD
+    
+    func addScrollViewButtons(){
         let middleMarker = CAShapeLayer()
         middleMarker.fillColor = UIColor.red.cgColor
         middleMarker.path = UIBezierPath(ovalIn: CGRect(x: UIScreen.main.bounds.midX-5, y: UIScreen.main.bounds.midY-5, width: 10, height: 10)).cgPath
@@ -217,13 +227,9 @@ class GameViewController: UIViewController {
         leftButton.backgroundColor = UIColor.red
         leftButton.addTarget(self, action: #selector(leftButtonTapped), for: .touchUpInside)
         self.view.addSubview(leftButton)
-        
-        //setup ephemeral title animation
-        ephemeralTitleAnimation.fromValue = 1
-        ephemeralTitleAnimation.toValue = 0
-        ephemeralTitleAnimation.isRemovedOnCompletion = true
-        ephemeralTitleAnimation.duration = 0.5
-        
+    }
+    
+    func addScrollView(){
         //instantiate and initialize the scrollview
         scrollView = UIScrollView()
         let scrollViewWidth = (CGFloat)(self.widgetsInView-1)*(self.regularWidgetSize.width+self.widgetSpacing)+self.middleWidgetSize.width
@@ -272,21 +278,27 @@ class GameViewController: UIViewController {
         }
         //update middle widget
         setCurrentMiddleWidget()
-        enlargeWidget(widget: currentMiddleWidget, size: self.middleWidgetSize)
+        enlargeWidget(widget: currentMiddleWidget, to: self.middleWidgetSize)
         currentMiddleWidget?.alpha = middleWidgetAlpha
+        currentMiddleWidget?.addGestureRecognizer(middleWidgetSwipe)
         
         //set scrollview properties based upon how the scroll view was initialized
         contentOffsetMin = initialContentOffsetX
         contentOffsetMax = (CGFloat)(scrollView.subviews.count-((widgetsInView-1)/2+1))*(regularWidgetSize.width+widgetSpacing)
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(false)
+    //MARK: - Overriden Functions
+    
+    override func viewDidLoad() {
+        middleWidgetSwipe.direction = .up
         
+        loadGameScene()
+        addScrollViewButtons()
+        addScrollView()
     }
     
-    override var prefersStatusBarHidden: Bool {
-        return true
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(false)
     }
     
     override func didReceiveMemoryWarning() {

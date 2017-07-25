@@ -21,7 +21,8 @@ class GameScene: SKScene {
     let enlargeWidget = SKAction.resize(toWidth: CGFloat(widgetSelectedSize.width), height: CGFloat(widgetSelectedSize.height), duration: 0.5)
     let resizeWidget = SKAction.resize(toWidth: CGFloat(widgetSize.width), height: CGFloat(widgetSize.height), duration: 0.5)
     
-    //Sinusoid Vars
+    //Sinusoid
+    let animateStrokeShader = SKShader(fileNamed: "animateStroke.fsh")
     let drawFactor: Float = 0.001
     var strokeShader: SKShader!
     var strokeLengthUniform: SKUniform!
@@ -35,6 +36,13 @@ class GameScene: SKScene {
             _strokeLengthFloat = newStrokeLengthFloat
             strokeLengthUniform.floatValue = newStrokeLengthFloat
         }
+    }
+    
+    func shaderWithFilename( _ filename: String?, fileExtension: String?, uniforms: [SKUniform] ) -> SKShader {
+        let path = Bundle.main.path( forResource: filename, ofType: fileExtension )
+        let source = try! NSString( contentsOfFile: path!, encoding: String.Encoding.utf8.rawValue )
+        let shader = SKShader( source: source as String, uniforms: uniforms )
+        return shader
     }
     
     func drawSinusoid(){

@@ -24,21 +24,9 @@ var seW = (UIScreen.main.bounds.width/568)
 // When multiplied by this variable, the given HEIGHT will conform to iPhone SE bounds
 var seH = (UIScreen.main.bounds.height/320)
 // Screen Scale
-let screenScale = UIScreen.main.scale//Node Vars
+let screenScale = UIScreen.main.scale
+//Node Vars
 //Widget Sizes for SpriteKit Actions
 let widgetSize = CGSize(width:25,height:25)
 let widgetSelectedSize = (width:25*1.25,height:25*1.25)
 
-//Shaders
-//Animate Stroke Shader
-let animateStrokeShader = SKShader(fileNamed: "animateStroke.fsh")
-//Custom Shader Call
-func shaderWithFilename( _ filename: String?, fileExtension: String?, uniforms: [SKUniform] ) -> SKShader {
-    let path = Bundle.main.path( forResource: filename, ofType: fileExtension )
-    let source = try! NSString( contentsOfFile: path!, encoding: String.Encoding.utf8.rawValue )
-    let shader = SKShader( source: source as String, uniforms: uniforms )
-    return shader
-}
-
-//StoryBoard
-let storyBoard : UIStoryboard = UIStoryboard(name: "Main", bundle:nil)

@@ -14,7 +14,7 @@ class StartScreenViewController: UIViewController {
     
     func addBackground(){
         let backgroundImageView = UIImageView(frame: view.bounds)
-        backgroundImageView.contentMode =  UIViewContentMode.scaleAspectFill
+        backgroundImageView.contentMode =  .scaleAspectFill
         backgroundImageView.clipsToBounds = true
         backgroundImageView.image = UIImage(named: "startscreen")
         backgroundImageView.center = view.center
@@ -24,27 +24,27 @@ class StartScreenViewController: UIViewController {
     }
     
     func addButtons(){
-        let playButton = UIButton(type: UIButtonType.roundedRect)
+        let playButton = UIButton(type: .roundedRect)
         playButton.frame = CGRect(x: (209), y: (30), width: (150), height: (70))
         playButton.layer.cornerRadius = 15
         playButton.setBackgroundImage(UIImage(named: "playbutton"), for: .normal)
-        playButton.contentMode = UIViewContentMode.scaleAspectFit
+        playButton.contentMode = .scaleAspectFit
         self.view.addSubview(playButton)
         self.view.bringSubview(toFront: playButton)
         playButton.addTarget(self, action: #selector(playButtonTapped), for: .touchUpInside)
         
-        let settingsButton = UIButton(type: UIButtonType.roundedRect)
+        let settingsButton = UIButton(type: .roundedRect)
         settingsButton.frame = CGRect(x: (209), y: (130), width: (150), height: (70))
         settingsButton.layer.cornerRadius = 15
         settingsButton.setBackgroundImage(UIImage(named: "settingsbutton"), for: .normal)
-        settingsButton.contentMode = UIViewContentMode.scaleAspectFit
+        settingsButton.contentMode = .scaleAspectFit
         self.view.addSubview(settingsButton)
         self.view.bringSubview(toFront: settingsButton)
         settingsButton.addTarget(self, action: #selector(settingsButtonTapped), for: .touchUpInside)
         
         // Gear Button is alternative to settingsButton
         /*
-         let gearButton = UIButton(type: UIButtonType.roundedRect)
+         let gearButton = UIButton(type: .roundedRect)
          gearButton.frame = CGRect(x: 518*seW,y: 110*seH,width: 50*seW,height: 30*seH)
          gearButton.setBackgroundImage(UIImage(named: "gearbutton"), for: .normal)
          gearButton.contentMode = UIViewContentMode.scaleToFill
@@ -53,10 +53,10 @@ class StartScreenViewController: UIViewController {
          gearButton.addTarget(self, action: #selector(settingsButtonTapped), for: .touchUpInside)
          */
         
-        let infoButton = UIButton(type: UIButtonType.roundedRect)
+        let infoButton = UIButton(type: .roundedRect)
         infoButton.frame = CGRect(x: 490,y: 270,width: 70,height: 40)
         infoButton.setBackgroundImage(UIImage(named: "infobutton"), for: .normal)
-        infoButton.contentMode = UIViewContentMode.scaleAspectFit
+        infoButton.contentMode = .scaleAspectFit
         self.view.addSubview(infoButton)
         self.view.bringSubview(toFront: infoButton)
         infoButton.addTarget(self, action: #selector(infoButtonTapped), for: .touchUpInside)
@@ -66,8 +66,8 @@ class StartScreenViewController: UIViewController {
     
     func playButtonTapped() {
         debugPrint("Play Button Tapped")
-        
         //Present GameViewController
+        let storyBoard : UIStoryboard = UIStoryboard(name: "Main", bundle:nil)
         let gvc = storyBoard.instantiateViewController(withIdentifier: "GameViewController") as! GameViewController
         self.present(gvc, animated:true, completion:nil)
     }
