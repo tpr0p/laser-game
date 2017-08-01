@@ -10,14 +10,15 @@ import UIKit
 
 class CentroidalScrollView: UIScrollView{
     //MARK: - ScrollView Properties
-    var visibleSubviews: Int
+    var subviewsVisible: Int
     var subviewSpacing: CGFloat
     var contentOffsetMin: CGPoint
     var contentOffsetMax: CGPoint
+    var subviewNames: [String]
     
     //MARK: - State Properties
     var currentMiddleViewIndex: Int
-    var currentMiddleView: UIImageView?{
+    public var currentMiddleView: UIImageView?{
         get{
             return subviews[currentMiddleViewIndex] as? UIImageView
         }
@@ -60,9 +61,23 @@ class CentroidalScrollView: UIScrollView{
             currentMiddleView?.alpha = middleViewAlpha
         }
     }
+    var subviewNameDisplayEnabled: Bool
+    /*
+    {
+        didSet{
+            if (subviewNameDisplayEnabled == false){
+                subviewNameDisplay.removeFromSuperview()
+            }
+        }
+    }
+   */
+    
+    //MARK: - Appendages
+    var subviewNameDisplay: UITextView
     
     //MARK: - Animation Properties
     let scrollAnimation = UIViewPropertyAnimator(duration: 0.25, curve: .easeInOut)
+    let subviewNameDisplayAnimation = UIViewPropertyAnimator(duration: 1, curve: .easeInOut)
     
     //MARK: - Constructors
     required init?(coder aDecoder: NSCoder) {
@@ -70,16 +85,19 @@ class CentroidalScrollView: UIScrollView{
     }
     
     override init(frame: CGRect) {
-        visibleSubviews = 3
+        subviewsVisible = 3
         subviewSpacing = 0
         contentOffsetMin = CGPoint(x: 0, y: 0)
         contentOffsetMax = CGPoint(x: 0, y: 0)
+        subviewNames = [String]()
         currentMiddleViewIndex = 0
         scrollingState = .none
         peripheralViewSize = CGSize(width: 0, height: 0)
         middleViewSize = CGSize(width: 0, height: 0)
         peripheralViewAlpha = 1.0
         middleViewAlpha = 1.0
+        subviewNameDisplayEnabled = false
+        subviewNameDisplay = UITextView()
         super.init(frame: frame)
         //Superclass Property Initialization
         decelerationRate = UIScrollViewDecelerationRateNormal
@@ -89,29 +107,28 @@ class CentroidalScrollView: UIScrollView{
         showsHorizontalScrollIndicator = false
     }
     
-    convenience init(superView: UIView, distanceFromBottomOfView: CGFloat, visibleSubviews: Int, peripheralViewSize: CGSize, middleViewSize: CGSize, subviewSpacing: CGFloat, imagesForSubviews:[UIImage]){
+    convenience init(superView: UIView, distanceFromBottomOfView: CGFloat, subviewsVisible: Int, peripheralViewSize: CGSize, middleViewSize: CGSize, subviewSpacing: CGFloat, subviewImages:[UIImage]){
         //calculate scrollview frame
-        let scrollViewWidth = (CGFloat)(visibleSubviews - 1) * (peripheralViewSize.width + subviewSpacing) + middleViewSize.width
+        let scrollViewWidth = (CGFloat)(subviewsVisible - 1) * (peripheralViewSize.width + subviewSpacing) + middleViewSize.width
         let frame = CGRect(x: (superView.bounds.width-scrollViewWidth)/2, y: superView.frame.maxY - (distanceFromBottomOfView + middleViewSize.height), width: scrollViewWidth, height: middleViewSize.height)
         
         //call default constructor
         self.init(frame: frame)
         
-        //set property values
-        self.visibleSubviews = visibleSubviews
+        //assign scrollview properties
+        self.subviewsVisible = subviewsVisible
         self.peripheralViewSize = peripheralViewSize
         self.middleViewSize = middleViewSize
         self.subviewSpacing = subviewSpacing
         contentOffsetMin = CGPoint(x: -(scrollViewWidth/2 - middleViewSize.width/2), y: 0)
-        contentOffsetMax = CGPoint(x:(CGFloat)(imagesForSubviews.count-((visibleSubviews-1)/2+1))*(peripheralViewSize.width+subviewSpacing), y: 0)
+        contentOffsetMax = CGPoint(x:(CGFloat)(subviewImages.count-((subviewsVisible-1)/2+1))*(peripheralViewSize.width+subviewSpacing), y: 0)
         
         //add subviews to scrollview, frames of each subview account for subview spacing and are by default peripheral views
         var i: Int = 0
         var xPos: CGFloat
-        for thisImage in imagesForSubviews{
+        for image in subviewImages{
             let imageView = UIImageView()
-            imageView.image = thisImage
-            imageView.alpha = peripheralViewAlpha
+            imageView.image = image
             if(i == 0){
                 xPos = 0
             }
@@ -125,33 +142,38 @@ class CentroidalScrollView: UIScrollView{
         }
         
         //update the scrollview such that the first subview is the middlewidget
-        self.contentOffset = self.contentOffsetMin
-        self.currentMiddleView?.alpha = self.middleViewAlpha
-        self.resizeAndTranslate(self.currentMiddleView!, to: self.middleViewSize)
+        contentOffset = contentOffsetMin
+        currentMiddleView?.alpha = middleViewAlpha
+        resizeAndTranslate(currentMiddleView!, to: middleViewSize)
+        
+        //assign subviewNameDisplay properties
+        subviewNameDisplay.frame = CGRect(x: self.frame.midX - (self.middleViewSize.width/2), y: self.frame.minY - 25, width: middleViewSize.width, height: 15)
+        subviewNameDisplay.backgroundColor = UIColor.clear
+        subviewNameDisplay.textColor = UIColor.white
+        subviewNameDisplay.textAlignment = .center
+        subviewNameDisplay.textContainerInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        subviewNameDisplay.font = UIFont(name: "", size: 15)
     }
     
     //MARK: - ScrollView Methods
-    func scrollLeft(){
+    public func scrollLeft(){
         //if statement ensures that the scrollview is not already scrolling and that it will not scroll out of bounds
         if(!scrollAnimation.isRunning && (self.contentOffset.x > self.contentOffsetMin.x)){
             //set scroll state
             scrollingState = .left
             
             //animations
-            self.setScrollAnimation()
-            scrollAnimation.startAnimation()
+            self.runScrollAnimation()
         }
     }
-    
-    func scrollRight(){
+    public func scrollRight(){
         //if statement ensures that the scrollview is not already scrolling and that it will not scroll out of bounds
         if(!scrollAnimation.isRunning && (self.contentOffset.x < self.contentOffsetMax.x)){
             //set scroll state
             scrollingState = .right
             
             //animations
-            self.setScrollAnimation()
-            scrollAnimation.startAnimation()
+            self.runScrollAnimation()
         }
     }
     
@@ -184,7 +206,7 @@ class CentroidalScrollView: UIScrollView{
     }
     
     //MARK: - Animation Methods
-    func setScrollAnimation(){
+    func runScrollAnimation(){
         self.scrollAnimation.addAnimations {
             //scroll the scrollview
             if(self.scrollingState == .left){
@@ -201,13 +223,38 @@ class CentroidalScrollView: UIScrollView{
             self.nextMiddleView?.alpha = self.middleViewAlpha
         }
         self.scrollAnimation.addCompletion{_ in
+            //update currentMiddleViewIndex
             if (self.scrollingState == .left){
                 self.currentMiddleViewIndex -= 1
             }
             else{
                 self.currentMiddleViewIndex += 1
             }
+            //update scrollingState
             self.scrollingState = .none
+            self.runSubviewNameDisplayAnimation()
+        }
+        self.scrollAnimation.startAnimation()
+    }
+    
+    func runSubviewNameDisplayAnimation(){
+        if(subviewNameDisplayEnabled){
+            //if the animation is already running it should terminate here
+            if(subviewNameDisplayAnimation.isRunning){
+                subviewNameDisplayAnimation.stopAnimation(true)
+            }
+            //update subviewNameDisplay
+            self.subviewNameDisplay.text = subviewNames[currentMiddleViewIndex]
+            self.subviewNameDisplay.alpha = 1.0
+            self.superview?.addSubview(subviewNameDisplay)
+        
+            self.subviewNameDisplayAnimation.addAnimations {
+                self.subviewNameDisplay.alpha = 0.0
+            }
+            self.subviewNameDisplayAnimation.addCompletion{_ in
+                self.subviewNameDisplay.removeFromSuperview()
+            }
+            self.subviewNameDisplayAnimation.startAnimation()
         }
     }
 }

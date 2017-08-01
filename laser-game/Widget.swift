@@ -9,25 +9,12 @@
 
 import UIKit
 
-class Widget: UIImageView{
-    
-    //MARK: - Properties
-    
+struct Widget{
     var name: String
+    var image: UIImage
     
-    //MARK: - Constructors
-    
-    override init(frame: CGRect) {
-        name = ""
-        super.init(frame: frame)
+    init(name: String) {
+        self.name = name
+        image = UIImage(named: name)!
     }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    //MARK: - Methods
-    
-    
-    
 }

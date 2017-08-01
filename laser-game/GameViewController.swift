@@ -43,28 +43,13 @@ class GameViewController: UIViewController {
     //MARK: - Populating the HUD
     
     func addHUD(){
-        //Middle Marker
+        //MARK: - Middle Marker
         let middleMarker = CAShapeLayer()
         middleMarker.fillColor = UIColor.red.cgColor
         middleMarker.path = UIBezierPath(ovalIn: CGRect(x: UIScreen.main.bounds.midX-5, y: UIScreen.main.bounds.midY-5, width: 10, height: 10)).cgPath
         self.view.layer.addSublayer(middleMarker)
         
-        //ScrollView Buttons
-        let rightButton = UIButton(type: .roundedRect)
-        rightButton.frame = CGRect(x:459,y:270,width:50,height:50)
-        rightButton.layer.cornerRadius = 25
-        rightButton.addTarget(self, action: #selector(scrollCSVRight), for: .touchUpInside)
-        rightButton.backgroundColor = UIColor.red
-        self.view.addSubview(rightButton)
-        
-        let leftButton = UIButton(type: .roundedRect)
-        leftButton.frame = CGRect(x:59,y:270,width:50,height:50)
-        leftButton.layer.cornerRadius = 25
-        leftButton.backgroundColor = UIColor.red
-        leftButton.addTarget(self, action: #selector(scrollCSVLeft), for: .touchUpInside)
-        self.view.addSubview(leftButton)
-        
-        //ScrollView
+        //MARK: - ScrollView
         //parameters to be passed into scrollview constructor
         let distFromBottom = CGFloat(20)
         let subsVisible = 5
@@ -72,23 +57,47 @@ class GameViewController: UIViewController {
         let largeSize = CGSize(width: 65, height: 65)
         let spacing = CGFloat(10)
         
-        //prepare images for the scrollview
-        let myImages = [UIImage(named: "devwidget1"), UIImage(named: "devwidget1"), UIImage(named: "devwidget1"), UIImage(named: "devwidget1"), UIImage(named: "devwidget1"), UIImage(named: "devwidget1"), UIImage(named: "devwidget1")]
-        
-        //instantiate the scrollview
-        self.scrollView = CentroidalScrollView(superView: self.view, distanceFromBottomOfView: distFromBottom, visibleSubviews: subsVisible, peripheralViewSize: smallSize, middleViewSize: largeSize, subviewSpacing: spacing, imagesForSubviews: myImages as! [UIImage])
+        //get images and names for the scrollview
+        widgetsInScrollview = [Widget(name: "devwidget1"), Widget(name: "devwidget2"), Widget(name: "devwidget3"), Widget(name: "devwidget1"), Widget(name: "devwidget2"), Widget(name: "devwidget3"), Widget(name: "devwidget1"), ]
+        var imagesForSubviews = [UIImage]()
+        for widget in widgetsInScrollview{
+            imagesForSubviews.append(widget.image)
+        }
+        var namesForSubviews = [String]()
+        for widget in widgetsInScrollview{
+            namesForSubviews.append(widget.name)
+        }
+        //instantiate scrollView and assign properties
+        self.scrollView = CentroidalScrollView(superView: self.view, distanceFromBottomOfView: distFromBottom, subviewsVisible: subsVisible, peripheralViewSize: smallSize, middleViewSize: largeSize, subviewSpacing: spacing, subviewImages: imagesForSubviews)
         scrollView?.middleViewAlpha = 1.0
         scrollView?.peripheralViewAlpha = 0.8
+        scrollView?.subviewNames = namesForSubviews
+        scrollView?.subviewNameDisplayEnabled = true
         self.view.addSubview(self.scrollView!)
+        
+        //MARK: - ScrollView Appendages
+        let rightButton = UIButton(type: .roundedRect)
+        rightButton.frame = CGRect(x:459,y:270,width:50,height:50)
+        rightButton.layer.cornerRadius = 25
+        rightButton.addTarget(self, action: #selector(scrollRight), for: .touchUpInside)
+        rightButton.backgroundColor = UIColor.red
+        self.view.addSubview(rightButton)
+        
+        let leftButton = UIButton(type: .roundedRect)
+        leftButton.frame = CGRect(x:59,y:270,width:50,height:50)
+        leftButton.layer.cornerRadius = 25
+        leftButton.backgroundColor = UIColor.red
+        leftButton.addTarget(self, action: #selector(scrollLeft), for: .touchUpInside)
+        self.view.addSubview(leftButton)
     }
     
     //MARK: - HUD Methods
     
-    func scrollCSVRight(){
+    func scrollRight(){
         scrollView.scrollRight()
     }
     
-    func scrollCSVLeft(){
+    func scrollLeft(){
         scrollView.scrollLeft()
     }
     
