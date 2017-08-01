@@ -80,12 +80,22 @@ class StartScreenViewController: UIViewController {
         debugPrint ("Info Button Tapped")
     }
     
-    //MARK: - Overrides
+    //MARK: - VC Lifecycle
+    
+    override var prefersStatusBarHidden: Bool{
+        return false
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         addBackground()
         addButtons()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(false)
+        debugPrint("The screen bounds are \(UIScreen.main.bounds)")
+        debugPrint("The view bounds are \(self.view.bounds)")
     }
     
     override func didReceiveMemoryWarning() {

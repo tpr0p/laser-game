@@ -17,6 +17,8 @@
 		D2264A991F1ECD27003E03C0 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2264A981F1ECD27003E03C0 /* GameScene.swift */; };
 		D2264A9B1F1ECD5E003E03C0 /* Sinusoid.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2264A9A1F1ECD5E003E03C0 /* Sinusoid.swift */; };
 		D2264A9D1F1ECD7C003E03C0 /* animateStroke.fsh in Resources */ = {isa = PBXBuildFile; fileRef = D2264A9C1F1ECD7C003E03C0 /* animateStroke.fsh */; };
+		D2C01A3A1F27A76F00650895 /* Widget.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2C01A391F27A76F00650895 /* Widget.swift */; };
+		D2C01A3E1F27AEB900650895 /* CentroidalScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2C01A3D1F27AEB900650895 /* CentroidalScrollView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +34,8 @@
 		D2264A981F1ECD27003E03C0 /* GameScene.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
 		D2264A9A1F1ECD5E003E03C0 /* Sinusoid.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Sinusoid.swift; sourceTree = "<group>"; };
 		D2264A9C1F1ECD7C003E03C0 /* animateStroke.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = animateStroke.fsh; sourceTree = "<group>"; };
+		D2C01A391F27A76F00650895 /* Widget.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Widget.swift; sourceTree = "<group>"; };
+		D2C01A3D1F27AEB900650895 /* CentroidalScrollView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CentroidalScrollView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -69,6 +73,8 @@
 				D2264A921F1ECC19003E03C0 /* StartScreenViewController.swift */,
 				D2264A961F1ECCEF003E03C0 /* GameViewController.swift */,
 				D2264A981F1ECD27003E03C0 /* GameScene.swift */,
+				D2C01A391F27A76F00650895 /* Widget.swift */,
+				D2C01A3D1F27AEB900650895 /* CentroidalScrollView.swift */,
 				D2264A9A1F1ECD5E003E03C0 /* Sinusoid.swift */,
 				D2264A9C1F1ECD7C003E03C0 /* animateStroke.fsh */,
 				D2264A841F1ECA79003E03C0 /* Main.storyboard */,
@@ -157,8 +163,10 @@
 				D2264A9B1F1ECD5E003E03C0 /* Sinusoid.swift in Sources */,
 				D2264A971F1ECCEF003E03C0 /* GameViewController.swift in Sources */,
 				D2264A951F1ECCA3003E03C0 /* Global.swift in Sources */,
+				D2C01A3E1F27AEB900650895 /* CentroidalScrollView.swift in Sources */,
 				D2264A931F1ECC19003E03C0 /* StartScreenViewController.swift in Sources */,
 				D2264A811F1ECA79003E03C0 /* AppDelegate.swift in Sources */,
+				D2C01A3A1F27A76F00650895 /* Widget.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
