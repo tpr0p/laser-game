@@ -8,12 +8,8 @@
 //
 //
 /*TODO:
- - !! add title layer that displays widget name above middle widget
  - !! add tap gesture recognizers to transition widgets from scrollview to gamescene.
- - ! clean up the code
-    - make loadGameScene intake a GameScene parameter (functionality moreso than best practice)
-    - determine which properites should be let constants and which need to be vars (best pract.)
-    - use markers (best pract.)
+ - ! make loadGameScene intake a GameScene parameter (functionality moreso than best practice)
  */
 
 import UIKit
