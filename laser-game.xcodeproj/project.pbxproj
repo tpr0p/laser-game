@@ -17,6 +17,9 @@
 		D2264A991F1ECD27003E03C0 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2264A981F1ECD27003E03C0 /* GameScene.swift */; };
 		D2264A9B1F1ECD5E003E03C0 /* Sinusoid.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2264A9A1F1ECD5E003E03C0 /* Sinusoid.swift */; };
 		D2264A9D1F1ECD7C003E03C0 /* animateStroke.fsh in Resources */ = {isa = PBXBuildFile; fileRef = D2264A9C1F1ECD7C003E03C0 /* animateStroke.fsh */; };
+		D2A9C9401F33B37000B60C12 /* ScrollState.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2A9C93F1F33B37000B60C12 /* ScrollState.swift */; };
+		D2A9C9421F33B3B600B60C12 /* ResizeState.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2A9C9411F33B3B600B60C12 /* ResizeState.swift */; };
+		D2AF68981F3779E200E557FA /* TODO.md in Sources */ = {isa = PBXBuildFile; fileRef = D2AF68971F3779E200E557FA /* TODO.md */; };
 		D2C01A3A1F27A76F00650895 /* Widget.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2C01A391F27A76F00650895 /* Widget.swift */; };
 		D2C01A3E1F27AEB900650895 /* CentroidalScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2C01A3D1F27AEB900650895 /* CentroidalScrollView.swift */; };
 /* End PBXBuildFile section */
@@ -34,6 +37,9 @@
 		D2264A981F1ECD27003E03C0 /* GameScene.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
 		D2264A9A1F1ECD5E003E03C0 /* Sinusoid.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Sinusoid.swift; sourceTree = "<group>"; };
 		D2264A9C1F1ECD7C003E03C0 /* animateStroke.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = animateStroke.fsh; sourceTree = "<group>"; };
+		D2A9C93F1F33B37000B60C12 /* ScrollState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScrollState.swift; sourceTree = "<group>"; };
+		D2A9C9411F33B3B600B60C12 /* ResizeState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResizeState.swift; sourceTree = "<group>"; };
+		D2AF68971F3779E200E557FA /* TODO.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = TODO.md; sourceTree = "<group>"; };
 		D2C01A391F27A76F00650895 /* Widget.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Widget.swift; sourceTree = "<group>"; };
 		D2C01A3D1F27AEB900650895 /* CentroidalScrollView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CentroidalScrollView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -68,13 +74,14 @@
 		D2264A7F1F1ECA79003E03C0 /* laser-game */ = {
 			isa = PBXGroup;
 			children = (
+				D2AF68971F3779E200E557FA /* TODO.md */,
 				D2264A801F1ECA79003E03C0 /* AppDelegate.swift */,
 				D2264A941F1ECCA3003E03C0 /* Global.swift */,
 				D2264A921F1ECC19003E03C0 /* StartScreenViewController.swift */,
 				D2264A961F1ECCEF003E03C0 /* GameViewController.swift */,
 				D2264A981F1ECD27003E03C0 /* GameScene.swift */,
 				D2C01A391F27A76F00650895 /* Widget.swift */,
-				D2C01A3D1F27AEB900650895 /* CentroidalScrollView.swift */,
+				D2A9C93E1F33B34500B60C12 /* CentroidalScrollView */,
 				D2264A9A1F1ECD5E003E03C0 /* Sinusoid.swift */,
 				D2264A9C1F1ECD7C003E03C0 /* animateStroke.fsh */,
 				D2264A841F1ECA79003E03C0 /* Main.storyboard */,
@@ -83,6 +90,16 @@
 				D2264A8C1F1ECA79003E03C0 /* Info.plist */,
 			);
 			path = "laser-game";
+			sourceTree = "<group>";
+		};
+		D2A9C93E1F33B34500B60C12 /* CentroidalScrollView */ = {
+			isa = PBXGroup;
+			children = (
+				D2C01A3D1F27AEB900650895 /* CentroidalScrollView.swift */,
+				D2A9C93F1F33B37000B60C12 /* ScrollState.swift */,
+				D2A9C9411F33B3B600B60C12 /* ResizeState.swift */,
+			);
+			name = CentroidalScrollView;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -165,8 +182,11 @@
 				D2264A951F1ECCA3003E03C0 /* Global.swift in Sources */,
 				D2C01A3E1F27AEB900650895 /* CentroidalScrollView.swift in Sources */,
 				D2264A931F1ECC19003E03C0 /* StartScreenViewController.swift in Sources */,
+				D2AF68981F3779E200E557FA /* TODO.md in Sources */,
 				D2264A811F1ECA79003E03C0 /* AppDelegate.swift in Sources */,
 				D2C01A3A1F27A76F00650895 /* Widget.swift in Sources */,
+				D2A9C9401F33B37000B60C12 /* ScrollState.swift in Sources */,
+				D2A9C9421F33B3B600B60C12 /* ResizeState.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

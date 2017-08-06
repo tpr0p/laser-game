@@ -27,6 +27,6 @@ var seH = (UIScreen.main.bounds.height/320)
 let screenScale = UIScreen.main.scale
 //Node Vars
 //Widget Sizes for SpriteKit Actions
-let widgetSize = CGSize(width:25,height:25)
-let widgetSelectedSize = (width:25*1.25,height:25*1.25)
+let widgetSize = CGSize(width:50,height:50)
+let widgetSelectedSize = (width:65,height:65)
 

@@ -11,9 +11,12 @@ import UIKit
 import SpriteKit
 
 class GameScene: SKScene {
+    //VC Reference
+    var viewController: GameViewController!
+    
     //Nodes
     let sinusoid = SKShapeNode()
-    let devSprite = SKSpriteNode(imageNamed: "devwidget1")
+    var spriteFromHUD: SKSpriteNode?
     var movableNode: SKNode?
     var movedNode: SKNode?
     
@@ -45,7 +48,7 @@ class GameScene: SKScene {
         return shader
     }
     
-    func drawSinusoid(){
+    func addSinusoid(){
         //Animating the Sinusoid
         strokeLengthKey = "u_current_percentage"
         strokeLengthUniform = SKUniform( name: strokeLengthKey, float: 0.0 )
@@ -63,18 +66,19 @@ class GameScene: SKScene {
         addChild(sinusoid)
     }
     
-    func addSprites(){
-        //Dev Sprite
-        devSprite.position = CGPoint(x:100,y: 50)
-        devSprite.size = widgetSize
-        devSprite.zPosition = 10
-        addChild(devSprite)
+    //Adding Widgets
+    func addWidget(_ image: UIImage, at pos: CGPoint){
+        let skPos = self.view?.convert(pos, to: self)
+        let widget = SKSpriteNode()
+        widget.size = widgetSize
+        widget.texture = SKTexture(cgImage: image.cgImage!)
+        widget.zPosition = CGFloat(101 + self.children.count)
+        widget.position = skPos!
+        self.addChild(widget)
     }
     
     override func didMove(to view: SKView) {
-        drawSinusoid()
-        
-        addSprites()
+        addSinusoid()
     }
     
     override func update(_ currentTime: TimeInterval) {
@@ -88,11 +92,13 @@ class GameScene: SKScene {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         if let touch = touches.first {
             let location = touch.location(in: self)
-            if devSprite.contains(location){
-                movableNode = devSprite
-                movableNode!.position = location
-                movableNode?.alpha = 0.5
-                movableNode?.run(enlargeWidget)
+            for child in self.children {
+                if child.contains(location) {
+                    movableNode = child
+                    movableNode!.position = location
+                    movableNode?.alpha = 0.5
+                    movableNode?.run(enlargeWidget)
+                }
             }
         }
     }

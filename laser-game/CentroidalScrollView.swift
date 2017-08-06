@@ -25,10 +25,10 @@ class CentroidalScrollView: UIScrollView{
     }
     var nextMiddleView: UIImageView?{
         get{
-            if(scrollingState == .left){
+            if(scrollState == .left){
                 return subviews[currentMiddleViewIndex-1] as? UIImageView
             }
-            else if(scrollingState == .right){
+            else if(scrollState == .right){
                 return subviews[currentMiddleViewIndex+1] as? UIImageView
             }
             else{
@@ -36,10 +36,7 @@ class CentroidalScrollView: UIScrollView{
             }
         }
     }
-    enum scrollState{
-        case right, left, none
-    }
-    var scrollingState: scrollState
+    var scrollState: ScrollState
     
     //MARK: - Subview Properties
     var peripheralViewSize: CGSize
@@ -91,7 +88,7 @@ class CentroidalScrollView: UIScrollView{
         contentOffsetMax = CGPoint(x: 0, y: 0)
         subviewNames = [String]()
         currentMiddleViewIndex = 0
-        scrollingState = .none
+        scrollState = .none
         peripheralViewSize = CGSize(width: 0, height: 0)
         middleViewSize = CGSize(width: 0, height: 0)
         peripheralViewAlpha = 1.0
@@ -160,7 +157,7 @@ class CentroidalScrollView: UIScrollView{
         //if statement ensures that the scrollview is not already scrolling and that it will not scroll out of bounds
         if(!scrollAnimation.isRunning && (self.contentOffset.x > self.contentOffsetMin.x)){
             //set scroll state
-            scrollingState = .left
+            scrollState = .left
             
             //animations
             self.runScrollAnimation()
@@ -170,7 +167,7 @@ class CentroidalScrollView: UIScrollView{
         //if statement ensures that the scrollview is not already scrolling and that it will not scroll out of bounds
         if(!scrollAnimation.isRunning && (self.contentOffset.x < self.contentOffsetMax.x)){
             //set scroll state
-            scrollingState = .right
+            scrollState = .right
             
             //animations
             self.runScrollAnimation()
@@ -182,22 +179,19 @@ class CentroidalScrollView: UIScrollView{
         let deltaW = size.width - subview.frame.width
         
         //Determine if the widget is growing or shrinking
-        enum resizeState{
-            case growing, shrinking, neither
-        }
-        var resizingState: resizeState = .neither
+        var resizeState: ResizeState = .neither
         if(deltaW < 0){
-            resizingState = .shrinking
+            resizeState = .shrinking
         }
         else if(deltaW > 0){
-            resizingState = .growing
+            resizeState = .growing
         }
         else{
-            resizingState = .neither
+            resizeState = .neither
         }
         
         //To maintain subviewspacing there are 2 cases where we must translate a resizing subview: when the scrollview is scrolling right and the subview is growing, and when the scrollview is scrolling left and the subview is shrinking. All other cases are fulfilled by simply resizing the subview without a translation.
-        if(scrollingState == .left && resizingState == .shrinking) || (scrollingState == .right && resizingState == .growing){
+        if(scrollState == .left && resizeState == .shrinking) || (scrollState == .right && resizeState == .growing){
             subview.frame = CGRect(x: subview.frame.minX-deltaW, y: (self.frame.height-size.height)/2, width: size.width, height: size.height)
         }
         else{
@@ -209,7 +203,7 @@ class CentroidalScrollView: UIScrollView{
     func runScrollAnimation(){
         self.scrollAnimation.addAnimations {
             //scroll the scrollview
-            if(self.scrollingState == .left){
+            if(self.scrollState == .left){
                 self.setContentOffset(CGPoint(x: self.contentOffset.x - (self.peripheralViewSize.width + self.subviewSpacing), y: self.contentOffset.y), animated: false)
             }
             else{
@@ -224,14 +218,14 @@ class CentroidalScrollView: UIScrollView{
         }
         self.scrollAnimation.addCompletion{_ in
             //update currentMiddleViewIndex
-            if (self.scrollingState == .left){
+            if (self.scrollState == .left){
                 self.currentMiddleViewIndex -= 1
             }
             else{
                 self.currentMiddleViewIndex += 1
             }
-            //update scrollingState
-            self.scrollingState = .none
+            //update scrollState
+            self.scrollState = .none
             self.runSubviewNameDisplayAnimation()
         }
         self.scrollAnimation.startAnimation()

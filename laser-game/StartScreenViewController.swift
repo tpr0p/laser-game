@@ -94,8 +94,10 @@ class StartScreenViewController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(false)
+        /*
         debugPrint("The screen bounds are \(UIScreen.main.bounds)")
         debugPrint("The view bounds are \(self.view.bounds)")
+        */
     }
     
     override func didReceiveMemoryWarning() {
